@@ -1,3 +1,13 @@
+/*
+ * This file is part of the Xilinx DMA IP Core driver tools for Linux
+ *
+ * Copyright (c) 2016-present,  Xilinx, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under BSD-style license (found in the
+ * LICENSE file in the root directory of this source tree)
+ */
+
 #include <stdio.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -5,34 +15,32 @@
 #include <unistd.h>
 #include <stdlib.h>
 
-int main(int argc, char ** argv) {
-	int fd = -1;
-	char * filename;
-	if ((argc < 2) || (argc > 3)) {
-		printf("Usage %s <device file>\n", argv[0]);
+int main(int argc, char *argv[])
+{
+
+	int fd;
+	char *filename;
+
+	if ( (argc < 2) || (argc >= 3))
+	{
+		printf("usage %s <device file>\n",argv[0]);
 		return -1;
 	}
-
 	filename = argv[1];
-	fd = open(filename, O_RDWR);
-
-	if (fd < 0) {
-		perror("Open file descriptor error!\n");
+	fd = open(filename,O_RDWR);
+	if (fd < 0)
+	{
+		perror("Device open Failed");
 		return fd;
 	}
+	printf("%s Device open successfull\n",argv[1]);
 
-	printf("Device \"%s\" is opened!\n", filename);
-
-	u_int32_t testReg = 0;
-	lseek(fd, 0x41000, SEEK_SET);
-	read(fd, &testReg, sizeof (u_int32_t));
-	printf("Value stored into %p => %x\n", (void*)0x41000, testReg);
-
-	if (close(fd)) {
-		perror("Closing error!\n");
-		return -2;
+	if ( close(fd) )
+	{
+		perror("Device Close Failed");
+		return -1;
 	}
+	printf("%s Device close successfull\n",argv[1]);
 
-	printf("Done!\n");
 	return 0;
 }
